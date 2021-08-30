@@ -5,6 +5,10 @@ const PORT = 5000;
 
 const {MONGOURI} = require('./keys'); // destructuring
 
+// registering our User model here
+require('./models/user');
+mongoose.model("User");
+
 mongoose.connect(MONGOURI);
 
 mongoose.connection.on('connected', () => {
