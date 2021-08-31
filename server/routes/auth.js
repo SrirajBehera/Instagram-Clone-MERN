@@ -9,8 +9,14 @@ const {JWT_SECRET} = require('../keys');
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
 
+const requireLogin = require('../middleware/requireLogin');
+
 router.get('/', (req, res) => {
     res.send("HELLO");
+});
+
+router.get('/protected', requireLogin, (req, res) => {
+    res.send("Hello User");
 })
 
 router.post('/signup', (req, res) => {
