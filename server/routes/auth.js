@@ -40,10 +40,37 @@ router.post('/signup', (req, res) => {
                         .catch((err) => {
                             console.log(`Error saving user - ${err}`);
                         })
-                })
+                });
         })
         .catch((err) => {
             console.log(`Error in email findOne - ${err}`);
+        });
+});
+
+router.post('/signin', (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        res.status(422).json({ error: "Please enter email or password" });
+    }
+
+    User.findOne({ email: email })
+        .then((savedUser) => {
+            if (!savedUser) {
+                return res.status(422).json({ error: "Invalid email or password" });
+            }
+            bcrypt.compare(password, savedUser.password)
+                .then((doMatch) => { // doMatch is a boolean value
+                    if (doMatch) {
+                        res.json({ message: "Successfully Signed In" });
+                    }
+                    else {
+                        return res.status(422).json({ error: "Invalid email or password" });
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
         })
 })
 
