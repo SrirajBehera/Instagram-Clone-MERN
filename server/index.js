@@ -15,6 +15,8 @@ mongoose.connection.on('error', (err) => {
 
 // registering our User model here
 require('./models/user');
+// registering our Post model here
+require('./models/post');
 mongoose.model("User");
 mongoose.connect(MONGOURI);
 
