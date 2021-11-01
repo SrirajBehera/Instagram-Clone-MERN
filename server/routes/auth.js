@@ -4,7 +4,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = require('../keys');
+const { JWT_SECRET } = require('../keys');
 
 const mongoose = require('mongoose');
 const User = mongoose.model('User');
@@ -72,8 +72,8 @@ router.post('/signin', (req, res) => {
                 .then((doMatch) => { // doMatch is a boolean value
                     if (doMatch) {
                         // res.json({ message: "Successfully Signed In" });
-                        const token = jwt.sign({_id: savedUser._id}, JWT_SECRET);
-                        res.json({token: token});
+                        const token = jwt.sign({ _id: savedUser._id }, JWT_SECRET);
+                        res.json({ token: token });
                     }
                     else {
                         return res.status(422).json({ error: "Invalid email or password" });

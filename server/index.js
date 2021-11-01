@@ -3,14 +3,14 @@ const app = express();
 const mongoose = require('mongoose');
 const PORT = 5000;
 
-const {MONGOURI} = require('./keys'); // destructuring
+const { MONGOURI } = require('./keys'); // destructuring
 
 mongoose.connection.on('connected', () => {
-    console.log("Connected to Cloud MongoDB Atlas");
+  console.log("Connected to Cloud MongoDB Atlas");
 })
 
 mongoose.connection.on('error', (err) => {
-    console.log("Error: ", err);
+  console.log("Error: ", err);
 })
 
 // registering our User model here
@@ -22,6 +22,7 @@ mongoose.connect(MONGOURI);
 
 app.use(express.json()) // parse to json
 app.use(require('./routes/auth'));
+app.use(require('./routes/post'));
 
 // // MiddleWare is something or a piece of code which takes the incoming request and it modifies it before it reaches the route handler
 // // when provided no parameters, our server will hang.
@@ -44,5 +45,5 @@ app.use(require('./routes/auth'));
 // })
 
 app.listen(PORT, () => {
-    console.log(`The Server is running on port: ${PORT}`);
+  console.log(`The Server is running on port: ${PORT}`);
 })
