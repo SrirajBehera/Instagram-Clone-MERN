@@ -1,0 +1,1 @@
+To solve the CORS issue, we can use cors npm package or react proxy.
