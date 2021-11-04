@@ -19,11 +19,13 @@ const SignIn = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        // console.log(data)
         if (data.error) {
           console.log(data.error)
           alert(data.error)
         } else {
+          localStorage.setItem("jwt_token", data.token)
+          localStorage.setItem("user_details", JSON.stringify(data.user))
           alert("Signed In Successfully!")
           history.push('/')
         }

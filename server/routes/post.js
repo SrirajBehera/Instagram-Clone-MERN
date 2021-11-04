@@ -16,8 +16,8 @@ router.get('/allposts', (req, res) => {
 })
 
 router.post('/createpost', requireLogin, (req, res) => {
-  const { title, body } = req.body
-  if (!title || !body) {
+  const { title, body, url } = req.body
+  if (!title || !body || !url) {
     return res.status(422).json({ error: 'Please add all the detais' })
   }
   // console.log(req.user)
@@ -28,7 +28,8 @@ router.post('/createpost', requireLogin, (req, res) => {
   const post = new Post({
     title: title,
     body: body,
-    postedBy: req.user
+    postedBy: req.user,
+    photo: url
   })
 
   post.save().then((result) => {
