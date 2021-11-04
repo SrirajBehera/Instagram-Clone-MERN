@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import { UserContext } from '../../App'
 
 const SignIn = () => {
+
+  const { state, dispatch } = useContext(UserContext)
 
   const history = useHistory()
 
@@ -26,6 +29,7 @@ const SignIn = () => {
         } else {
           localStorage.setItem("jwt_token", data.token)
           localStorage.setItem("user_details", JSON.stringify(data.user))
+          dispatch({ type: "USER", payload: data.user })
           alert("Signed In Successfully!")
           history.push('/')
         }
