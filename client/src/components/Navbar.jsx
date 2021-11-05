@@ -1,7 +1,35 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { UserContext } from '../App'
 
 const Navbar = () => {
+
+  const { state, dispatch } = useContext(UserContext)
+  const renderList = () => {
+    if (state) {
+      return [
+        <li class="nav-item">
+          <Link class="nav-link" to="/">Home</Link>
+        </li>,
+        <li class="nav-item">
+          <Link class="nav-link" to="/createpost">Create Post</Link>
+        </li>,
+        <li class="nav-item">
+          <Link class="nav-link" to="/profile">Profile</Link>
+        </li>
+      ]
+    } else {
+      return [
+        <li class="nav-item">
+          <Link class="nav-link" aria-current="page" to="/signin">SignIn</Link>
+        </li>,
+        <li class="nav-item">
+          <Link class="nav-link" to="/signup">SignUp</Link>
+        </li>
+      ]
+    }
+  }
+
   return (
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
@@ -11,21 +39,7 @@ const Navbar = () => {
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
-            <li class="nav-item">
-              <Link class="nav-link" to="/">Home</Link>
-            </li>
-            <li class="nav-item">
-              <Link class="nav-link" aria-current="page" to="/signin">SignIn</Link>
-            </li>
-            <li class="nav-item">
-              <Link class="nav-link" to="/signup">SignUp</Link>
-            </li>
-            <li class="nav-item">
-              <Link class="nav-link" to="/createpost">Create Post</Link>
-            </li>
-            <li class="nav-item">
-              <Link class="nav-link" to="/profile">Profile</Link>
-            </li>
+            {renderList()}
           </ul>
         </div>
       </div>
