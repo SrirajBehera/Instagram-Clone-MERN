@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const requireLogin = require('../middleware/requireLogin');
 const Post = mongoose.model('Post');
 
-router.get('/allposts', (req, res) => {
+router.get('/allposts', requireLogin, (req, res) => {
   Post.find() // no conditions here so we get all the posts
     .populate("postedBy", "_id name") // to populate the postedBy field, 2nd parameter is to populate the postedBy conditionally
     .then((posts) => {
