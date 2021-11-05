@@ -23,6 +23,7 @@ const Home = () => {
     <>
       <div style={{
         display: "flex",
+        flexDirection: "column-reverse",
         justifyContent: "center",
         alignItems: "center",
         margin: '20px'

@@ -20,7 +20,7 @@ const Routing = () => {
     const user = JSON.parse(localStorage.getItem("user_details"))
     if (user) {
       dispatch({ type: "USER", payload: user }) // handing the situ when the user closes the app but does not log out so reopening the app should be taken care of
-      history.push('/')
+      // history.push('/')
     } else {
       history.push('/signin')
     }

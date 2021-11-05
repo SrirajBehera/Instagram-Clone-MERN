@@ -1,6 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+import { UserContext } from '../../App'
 
 const Profile = () => {
+
+  const [pic, setPic] = useState([])
+  const { state, dispatch } = useContext(UserContext)
+
+  useEffect(() => {
+    fetch('/myposts', {
+      method: 'GET',
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem('jwt_token')
+      }
+    })
+      .then((response) => response.json())
+      .then(data => {
+        console.log(data);
+        setPic(data.posts)
+      })
+      .catch(error => console.log(error));
+  }, [])
+
   return (
     <>
       <div style={{
@@ -18,7 +38,7 @@ const Profile = () => {
             <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=880&q=80" alt="User Picture" style={{ width: '160px', height: '160px', borderRadius: '80px' }} />
           </div>
           <div>
-            <h3>Sriraj Behera</h3>
+            <h3>{state ? state.name : "Loading"}</h3>
             <div style={{
               display: 'flex',
               width: '480px',
@@ -33,13 +53,13 @@ const Profile = () => {
 
       </div>
       <div className="gallery">
-        <img className="item" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=880&q=80" alt="User Picture" />
-        <img className="item" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=880&q=80" alt="User Picture" />
-        <img className="item" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=880&q=80" alt="User Picture" />
-        <img className="item" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=880&q=80" alt="User Picture" />
-        <img className="item" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=880&q=80" alt="User Picture" />
-        <img className="item" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=880&q=80" alt="User Picture" />
-
+        {
+          pic.map(item => {
+            return (
+              <img key={item._id} className="item" src={item.photo} alt={item.title} />
+            )
+          })
+        }
       </div>
     </>
   )
