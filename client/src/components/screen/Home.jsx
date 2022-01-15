@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { UserContext } from '../../App'
 
 const Home = () => {
 
   const [data, setData] = useState([])
+  const { state, dispatch } = useContext(UserContext)
 
   useEffect(() => {
     fetch('/allposts', {
@@ -13,11 +15,65 @@ const Home = () => {
     })
       .then(response => response.json())
       .then(data => {
+        console.log(data)
         setData(data.posts)
       })
       .catch(err => { console.error(err) })
-
   }, [])
+
+  const likePost = (id) => {
+    fetch('/like', {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem('jwt_token')
+      },
+      body: JSON.stringify({
+        postId: id
+      })
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        // console.log(result);
+        const newData = data.map(item => {
+          if (item._id === result._id) {
+            return result;
+          }
+          else {
+            return item;
+          }
+        })
+        setData(newData);
+      })
+      .catch(err => { console.error(err) })
+  }
+
+  const unlikePost = (id) => {
+    fetch('/unlike', {
+      method: 'PUT',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem('jwt_token')
+      },
+      body: JSON.stringify({
+        postId: id
+      })
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        // console.log(result);
+        const newData = data.map(item => {
+          if (item._id === result._id) {
+            return result;
+          }
+          else {
+            return item;
+          }
+        })
+        setData(newData);
+      })
+      .catch(err => { console.error(err) })
+  }
 
   return (
     <>
@@ -36,7 +92,13 @@ const Home = () => {
                 <h3 style={{ padding: "5px 10px" }}>{item.postedBy.name}</h3>
                 <img src={item.photo} class="card-img-top" alt="user-post" style={{ height: '550px' }} />
                 <div class="card-body" style={{ display: 'flex', flexDirection: 'column' }}>
-                  <i class="material-icons" style={{ color: 'red' }}>favorite</i>
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    {item.likes.includes(state._id)
+                      ? <i class="material-icons" onClick={() => unlikePost(item._id)}>thumb_down</i>
+                      : <i class="material-icons" onClick={() => likePost(item._id)}>thumb_up</i>
+                    }
+                  </div>
+                  <p style={{ width: '70rem' }}>{item.likes.length} likes</p>
                   <p style={{ width: '70rem' }}>{item.title}</p>
                   <p style={{ width: '70rem' }}>{item.body}</p>
                   <div class="input-group mb-3" style={{ width: '1080px' }}>
