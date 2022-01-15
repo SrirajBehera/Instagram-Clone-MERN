@@ -103,6 +103,24 @@ const Home = () => {
       .catch((err) => console.error(err))
   }
 
+  const deletePost = (postId) => {
+    fetch(`/delete/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        "Authorization": "Bearer " + localStorage.getItem("jwt_token")
+      }
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log(result)
+        const newData = data.filter(item => {
+          return item._id !== result._id
+        })
+        setData(newData)
+      })
+      .catch(err => console.log(err))
+  }
+
   return (
     <>
       <div style={{
@@ -117,7 +135,12 @@ const Home = () => {
           data.map(item => {
             return (
               <div class="card" style={{ width: "70rem" }} key={item._id}>
-                <h3 style={{ padding: "5px 10px" }}>{item.postedBy.name}</h3>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginRight: 10 }}>
+                  <h3 style={{ padding: "5px 10px" }}>{item.postedBy.name}</h3>
+                  {
+                    item.postedBy._id === state._id && <i class="material-icons" onClick={() => deletePost(item._id)}>delete</i>
+                  }
+                </div>
                 <img src={item.photo} class="card-img-top" alt="user-post" style={{ height: '550px' }} />
                 <div class="card-body" style={{ display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', flexDirection: 'row' }}>
