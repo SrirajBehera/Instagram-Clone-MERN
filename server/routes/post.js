@@ -7,6 +7,7 @@ const Post = mongoose.model('Post');
 router.get('/allposts', requireLogin, (req, res) => {
   Post.find() // no conditions here so we get all the posts
     .populate("postedBy", "_id name") // to populate the postedBy field, 2nd parameter is to populate the postedBy conditionally
+    .populate("comments.postedBy", "_id name")
     .then((posts) => {
       res.json({ posts })
     })
@@ -56,14 +57,17 @@ router.put('/like', requireLogin, (req, res) => {
     $push: { likes: req.user._id }
   }, {
     new: true
-  }).exec((err, result) => {
-    if (err) {
-      return res.status(422).json({ error: err });
-    }
-    else {
-      res.json(result);
-    }
   })
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name")
+    .exec((err, result) => {
+      if (err) {
+        return res.status(422).json({ error: err });
+      }
+      else {
+        res.json(result);
+      }
+    })
 })
 
 router.put('/unlike', requireLogin, (req, res) => {
@@ -71,14 +75,17 @@ router.put('/unlike', requireLogin, (req, res) => {
     $pull: { likes: req.user._id }
   }, {
     new: true
-  }).exec((err, result) => {
-    if (err) {
-      return res.status(422).json({ error: err });
-    }
-    else {
-      res.json(result);
-    }
   })
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name")
+    .exec((err, result) => {
+      if (err) {
+        return res.status(422).json({ error: err });
+      }
+      else {
+        res.json(result);
+      }
+    })
 })
 
 router.put('/comment', requireLogin, (req, res) => {
@@ -91,15 +98,16 @@ router.put('/comment', requireLogin, (req, res) => {
   }, {
     new: true
   })
-  .populate("comments.postedBy", "_id name")
-  .exec((err, result) => {
-    if (err) {
-      return res.status(422).json({ error: err });
-    }
-    else {
-      res.json(result);
-    }
-  })
+    .populate("comments.postedBy", "_id name")
+    .populate("postedBy", "_id name")
+    .exec((err, result) => {
+      if (err) {
+        return res.status(422).json({ error: err });
+      }
+      else {
+        res.json(result);
+      }
+    })
 })
 
 module.exports = router

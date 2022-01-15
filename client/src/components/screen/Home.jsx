@@ -75,6 +75,34 @@ const Home = () => {
       .catch(err => { console.error(err) })
   }
 
+  const makeComment = (text, postId) => {
+    fetch('/comment', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+      },
+      body: JSON.stringify({
+        text: text,
+        postId: postId
+      })
+    })
+      .then((response) => response.json())
+      .then((result) => {
+        // console.log(result)
+        const newData = data.map(item => {
+          if (item._id === result._id) {
+            return result;
+          }
+          else {
+            return item;
+          }
+        })
+        setData(newData);
+      })
+      .catch((err) => console.error(err))
+  }
+
   return (
     <>
       <div style={{
@@ -101,10 +129,24 @@ const Home = () => {
                   <p style={{ width: '70rem' }}>{item.likes.length} likes</p>
                   <p style={{ width: '70rem' }}>{item.title}</p>
                   <p style={{ width: '70rem' }}>{item.body}</p>
-                  <div class="input-group mb-3" style={{ width: '1080px' }}>
-                    <input type="text" class="form-control" placeholder="Add a Comment" aria-label="Recipient's username" aria-describedby="button-addon2" />
-                    <button class="btn btn-primary" type="button" id="button-addon2">Send</button>
-                  </div>
+                  {
+                    item.comments.map((record) => {
+                      return (
+                        <h6><span style={{ fontWeight: '500' }}>{record.postedBy.name}</span> {record.text}</h6>
+                      )
+                    })
+                  }
+                  <form onSubmit={
+                    (e) => {
+                      e.preventDefault();
+                      makeComment(e.target[0].value, item._id)
+                    }
+                  }>
+                    <div class="input-group mb-3" style={{ width: '1080px' }}>
+                      <input type="text" class="form-control" placeholder="Add a Comment" aria-label="Recipient's username" aria-describedby="button-addon2" />
+                      <button class="btn btn-primary" type="submit" id="button-addon2">Send</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             )
