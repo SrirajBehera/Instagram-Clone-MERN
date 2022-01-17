@@ -6,12 +6,14 @@ const Post = mongoose.model('Post');
 const User = mongoose.model('User');
 
 router.get('/user/:id', requireLogin, (req, res) => {
-  User.findOne({ id: req.params.id })
+  User.findOne({ _id: req.params.id })
     .select('-password') // get all fields except password
     .then(user => {
-      Post.find({ postedBy: req.params._id })
+      Post.find({ postedBy: req.params.id })
         .populate("postedBy", "_id name")
         .exec((err, posts) => {
+          console.log("test err", err)
+          console.log("test posts", posts)
           if (err) {
             return res.status(422).json({ error: err })
           }
@@ -19,7 +21,7 @@ router.get('/user/:id', requireLogin, (req, res) => {
         })
     })
     .catch(err => {
-      res.status(404).json({ error: "User not found" })
+      return res.status(404).json({ error: "User not found" + err })
     })
 })
 
@@ -29,24 +31,23 @@ router.put('/follow', requireLogin, (req, res) => {
   }, {
     new: true
   })
-    .exec((err, result) => {
+    , (err, result) => {
       if (err) {
         return res.status(422).json({ error: err });
       }
       else {
         User.findByIdAndUpdate(req.user._id, {
-          $push: { following: req.user.followId }
+          $push: { following: req.body.followId }
         }, {
           new: true
         })
           .then(result => {
             res.json(result);
-          })
-          .catch(err => {
-            return res.status(422).json({ error: err });
+          }).catch(err => {
+            return res.status(422).json({ err: err });
           })
       }
-    })
+    }
 })
 
 router.put('/unfollow', requireLogin, (req, res) => {
@@ -55,24 +56,23 @@ router.put('/unfollow', requireLogin, (req, res) => {
   }, {
     new: true
   })
-    .exec((err, result) => {
+    , (err, result) => {
       if (err) {
         return res.status(422).json({ error: err });
       }
       else {
         User.findByIdAndUpdate(req.user._id, {
-          $pull: { following: req.user.unfollowId }
+          $pull: { following: req.body.unfollowId }
         }, {
           new: true
         })
           .then(result => {
             res.json(result);
-          })
-          .catch(err => {
-            return res.status(422).json({ error: err });
+          }).catch(err => {
+            return res.status(422).json({ err: err });
           })
       }
-    })
+    }
 })
 
 

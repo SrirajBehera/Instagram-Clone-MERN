@@ -23,6 +23,7 @@ mongoose.connect(MONGOURI);
 app.use(express.json()) // parse to json
 app.use(require('./routes/auth'));
 app.use(require('./routes/post'));
+app.use(require('./routes/user'));
 
 // // MiddleWare is something or a piece of code which takes the incoming request and it modifies it before it reaches the route handler
 // // when provided no parameters, our server will hang.
